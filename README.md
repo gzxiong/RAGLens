@@ -64,3 +64,16 @@ preds = raglens.predict(
 print(f"Balanced Accuracy: {balanced_accuracy_score(test_labels, preds)}") # 0.6865
 print(f"Macro F1: {f1_score(test_labels, preds, average='macro')}") # 0.6876
 ```
+
+## Citation
+For the use of `RAGLens`, please consider citing
+```bibtex
+@inproceedings{
+    xiong2026toward,
+    title={Toward Faithful Retrieval-Augmented Generation with Sparse Autoencoders},
+    author={Guangzhi Xiong and Zhenghao He and Bohan Liu and Sanchit Sinha and Aidong Zhang},
+    booktitle={The Fourteenth International Conference on Learning Representations},
+    year={2026},
+    url={https://openreview.net/forum?id=hgBZP67BkP}
+}
+```
