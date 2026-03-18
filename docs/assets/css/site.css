@@ -1,0 +1,189 @@
+﻿body {
+  font-family: "Noto Sans", sans-serif;
+  color: #222;
+  background: #ffffff;
+  line-height: 1.65;
+}
+
+a {
+  color: #3273dc;
+}
+
+a:hover {
+  color: #1f5fbf;
+}
+
+.publication-title {
+  font-family: "Google Sans", "Noto Sans", sans-serif;
+  font-weight: 700;
+  line-height: 1.15;
+  margin-bottom: 1rem;
+  color: #111827;
+}
+
+.publication-authors,
+.publication-venue {
+  color: #363636;
+}
+
+.publication-authors .author-block,
+.publication-venue .author-block {
+  display: inline-block;
+  margin: 0 0.25rem 0.45rem;
+}
+
+.publication-summary {
+  max-width: 52rem;
+  margin: 1.25rem auto 0;
+  color: #4a4a4a;
+}
+
+.publication-links {
+  margin-top: 1.5rem;
+}
+
+.publication-links .link-block {
+  display: inline-block;
+  margin: 0.3rem 0.2rem;
+}
+
+.publication-links .button {
+  min-width: 8.8rem;
+}
+
+.section {
+  padding-top: 2.6rem;
+  padding-bottom: 2.6rem;
+}
+
+.paper-section {
+  background: #ffffff;
+}
+
+.section-copy {
+  max-width: 52rem;
+  margin: 0 auto;
+}
+
+.visual-block {
+  margin-top: 2rem;
+}
+
+.visual-copy {
+  max-width: 52rem;
+  margin: 0 auto 1rem;
+}
+
+.visual-copy .title {
+  margin-bottom: 0.7rem;
+}
+
+.center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+  height: auto;
+}
+
+.paper-image {
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  background: #ffffff;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.04);
+}
+
+.image-xl {
+  max-width: 980px;
+}
+
+.image-wide {
+  max-width: 980px;
+}
+
+.image-large {
+  max-width: 840px;
+}
+
+.image-medium {
+  max-width: 760px;
+}
+
+.image-narrow {
+  max-width: 640px;
+}
+
+.image-compact {
+  max-width: 520px;
+}
+
+.image-tall {
+  max-width: 740px;
+}
+
+.image-caption {
+  max-width: 52rem;
+  margin: 0.95rem auto 0;
+  text-align: left;
+  color: #4a4a4a;
+}
+
+pre {
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  background: #f7f7f7;
+  color: #222;
+  padding: 1.1rem 1.2rem;
+  overflow-x: auto;
+}
+
+code {
+  font-size: 0.92em;
+}
+
+.footer {
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+  background: #ffffff;
+}
+
+.icon-link {
+  color: #4a4a4a;
+  font-size: 1.35rem;
+  margin: 0 0.45rem;
+}
+
+.icon-link:hover {
+  color: #000000;
+}
+
+.footer-copy {
+  color: #6b7280;
+}
+
+@media screen and (max-width: 768px) {
+  .publication-title {
+    font-size: 2.05rem !important;
+  }
+
+  .publication-links .link-block {
+    display: block;
+    margin: 0.45rem 0;
+  }
+
+  .publication-links .button {
+    width: 100%;
+  }
+
+  .section {
+    padding-top: 2.2rem;
+    padding-bottom: 2.2rem;
+  }
+
+  .visual-copy,
+  .image-caption,
+  .section-copy,
+  .publication-summary {
+    max-width: 100%;
+  }
+}

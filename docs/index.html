@@ -1,0 +1,587 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>RAGLens | Toward Faithful Retrieval-Augmented Generation with Sparse Autoencoders</title>
+    <meta
+      name="description"
+      content="Project page for RAGLens, a lightweight sparse-autoencoder-based detector that identifies, explains, and mitigates unfaithful retrieval-augmented generation outputs."
+    >
+    <meta
+      name="keywords"
+      content="RAGLens, retrieval-augmented generation, hallucination detection, sparse autoencoders, interpretability, faithfulness"
+    >
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Castoro:ital@0;1&family=Google+Sans:wght@400;500;700&family=Noto+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    >
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css"
+    >
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.9.4/css/academicons.min.css"
+    >
+    <link rel="stylesheet" href="assets/css/site.css">
+  </head>
+  <body>
+    <section class="hero">
+      <div class="hero-body">
+        <div class="container is-max-desktop">
+          <div class="columns is-centered">
+            <div class="column has-text-centered">
+              <h1 class="title is-2 publication-title">
+                RAGLens: Toward Faithful Retrieval-Augmented Generation with Sparse Autoencoders
+              </h1>
+
+              <div class="is-size-5 publication-authors">
+                <span class="author-block">Guangzhi Xiong,</span>
+                <span class="author-block">Zhenghao He,</span>
+                <span class="author-block">Bohan Liu,</span>
+                <span class="author-block">Sanchit Sinha,</span>
+                <span class="author-block">Aidong Zhang</span>
+              </div>
+
+              <div class="is-size-5 publication-authors">
+                <span class="author-block">University of Virginia</span><br>
+              </div>
+
+              <div class="is-size-5 publication-venue">
+                <span class="author-block">ICLR 2026</span><br>
+              </div>
+
+              <p class="publication-summary">
+                RAGLens is a lightweight hallucination detector that uses sparse autoencoders and interpretable
+                additive modeling to identify, explain, and mitigate unfaithful retrieval-augmented generation outputs.
+              </p>
+
+              <div class="column has-text-centered">
+                <div class="publication-links">
+                  <span class="link-block">
+                    <a
+                      href="https://arxiv.org/abs/2512.08892"
+                      class="external-link button is-normal is-rounded is-dark"
+                      target="_blank"
+                      rel="noopener"
+                    >
+                      <span class="icon">
+                        <i class="ai ai-arxiv"></i>
+                      </span>
+                      <span>arXiv</span>
+                    </a>
+                  </span>
+                  <span class="link-block">
+                    <a
+                      href="https://openreview.net/forum?id=hgBZP67BkP"
+                      class="external-link button is-normal is-rounded is-dark"
+                      target="_blank"
+                      rel="noopener"
+                    >
+                      <span class="icon">
+                        <i class="fa-solid fa-book-open"></i>
+                      </span>
+                      <span>OpenReview</span>
+                    </a>
+                  </span>
+                  <span class="link-block">
+                    <a
+                      href="https://github.com/Teddy-XiongGZ/RAGLens"
+                      class="external-link button is-normal is-rounded is-dark"
+                      target="_blank"
+                      rel="noopener"
+                    >
+                      <span class="icon">
+                        <i class="fab fa-github"></i>
+                      </span>
+                      <span>Code</span>
+                    </a>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section paper-section" id="introduction">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered has-text-centered">
+          <div class="column is-four-fifths">
+            <h2 class="title is-3">Introduction</h2>
+            <div class="content has-text-justified section-copy">
+              <p>
+                Retrieval-augmented generation improves factuality by grounding model outputs in retrieved evidence,
+                but unfaithful generations remain a persistent challenge. Models can still introduce unsupported
+                details, contradict the source material, or overstate information that is only weakly grounded in the
+                retrieved context.
+              </p>
+              <p>
+                Existing detectors often rely on expensive external LLM judges or large supervised classifiers.
+                Although these approaches can be effective, they are costly to deploy and often offer limited insight
+                into why a response is flagged as unreliable.
+              </p>
+              <p>
+                RAGLens approaches this problem through sparse representation probing. By using sparse autoencoders to
+                disentangle internal activations and a generalized additive model to make predictions transparent, the
+                method provides a practical route to faithfulness detection while also supporting explanation and
+                targeted mitigation.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section paper-section" id="framework">
+      <div class="container is-max-widescreen">
+        <div class="columns is-centered has-text-centered">
+          <div class="column is-four-fifths">
+            <h2 class="title is-3">RAGLens Framework</h2>
+            <div class="content has-text-justified section-copy">
+              <p>
+                RAGLens treats hallucination detection as a sparse feature extraction problem. Output tokens are encoded
+                with an SAE attached to an LLM hookpoint, informative features are selected with mutual information,
+                and the resulting sparse summaries are passed to an interpretable predictor. The same sparse features
+                can then be used to localize suspicious spans and provide feedback for revision.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="columns is-centered visual-block">
+          <div class="column is-full has-text-centered">
+              <img
+                src="figs/Fig1.svg"
+                alt="Overview of the RAGLens pipeline for sparse probing, faithfulness prediction, explanation, and mitigation."
+                class="center paper-image image-xl"
+              >
+            <p class="image-caption">
+              RAGLens links sparse internal features to three connected goals: reliable faithfulness prediction,
+              interpretable analysis of hallucination-related behavior, and mitigation through targeted feedback.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section paper-section" id="main-results">
+      <div class="container is-max-widescreen">
+        <div class="columns is-centered has-text-centered">
+          <div class="column is-four-fifths">
+            <h2 class="title is-3">Main Results</h2>
+            <div class="content has-text-justified section-copy">
+              <p>
+                We first evaluate RAGLens against prompting-based detectors, uncertainty baselines, and prior methods
+                that also exploit internal model representations. Across RAGTruth and Dolly, the sparse-feature view
+                provides a strong and consistent signal for hallucination detection.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="columns is-centered visual-block">
+          <div class="column is-full has-text-centered">
+            <div class="content has-text-justified visual-copy">
+              <h3 class="title is-4">Detection Performance</h3>
+              <p>
+                The main benchmark comparison shows that RAGLens performs strongly across both summarization and
+                question answering settings, outperforming prior baselines on the core evaluation suites.
+              </p>
+            </div>
+              <img
+                src="figs/Tab1.png"
+                alt="Benchmark comparison of RAGLens against prior hallucination detection methods on RAGTruth and Dolly."
+                class="center paper-image image-wide"
+                loading="lazy"
+              >
+            <p class="image-caption">
+              RAGLens consistently outperforms prior detectors on RAGTruth and Dolly, showing that sparse SAE features
+              provide a practical and effective signal for faithfulness prediction.
+            </p>
+          </div>
+        </div>
+
+        <div class="columns is-centered visual-block">
+          <div class="column is-full has-text-centered">
+            <div class="content has-text-justified visual-copy">
+              <h3 class="title is-4">Internal Signals vs. Self-Judgment</h3>
+              <p>
+                We also compare sparse internal signals with chain-of-thought style self-judgment. This analysis asks
+                whether the model's latent activations contain faithfulness information that is not fully captured by
+                explicit self-evaluation prompts.
+              </p>
+            </div>
+              <img
+                src="figs/Fig2.svg"
+                alt="Comparison between chain-of-thought self-judgment and sparse internal feature signals for hallucination detection."
+                class="center paper-image image-large"
+                loading="lazy"
+              >
+            <p class="image-caption">
+              Sparse internal features offer a stronger faithfulness signal than chain-of-thought self-judgment across
+              datasets, suggesting that the model's internal knowledge can be more informative than its explicit
+              critique of its own outputs.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section paper-section" id="generalization">
+      <div class="container is-max-widescreen">
+        <div class="columns is-centered has-text-centered">
+          <div class="column is-four-fifths">
+            <h2 class="title is-3">Generalization Across Settings</h2>
+            <div class="content has-text-justified section-copy">
+              <p>
+                Beyond in-domain performance, RAGLens is designed to capture reusable hallucination cues. The next
+                analyses examine transfer across datasets and subtasks, as well as the layerwise distribution of
+                hallucination-related information across different model families.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="columns is-centered visual-block">
+          <div class="column is-full has-text-centered">
+            <div class="content has-text-justified visual-copy">
+              <h3 class="title is-4">Transfer Across Datasets and Subtasks</h3>
+              <p>
+                The following comparison evaluates whether a detector trained in one setting continues to perform when
+                transferred to other datasets or RAG subtasks.
+              </p>
+            </div>
+              <img
+                src="figs/Tab2.png"
+                alt="Transfer results across datasets and RAGTruth subtasks."
+                class="center paper-image image-medium"
+                loading="lazy"
+              >
+            <p class="image-caption">
+              RAGLens retains meaningful performance under cross-dataset and cross-subtask transfer, indicating that it
+              learns reusable hallucination cues rather than benchmark-specific heuristics.
+            </p>
+          </div>
+        </div>
+
+        <div class="columns is-centered visual-block">
+          <div class="column is-full has-text-centered">
+            <div class="content has-text-justified visual-copy">
+              <h3 class="title is-4">Layerwise Behavior Across Models</h3>
+              <p>
+                We further analyze where hallucination-related signals concentrate inside the model. These patterns are
+                informative for choosing effective hookpoints and understanding how faithfulness information is encoded.
+              </p>
+            </div>
+              <img
+                src="figs/Fig3.png"
+                alt="Layerwise analysis across Llama and Qwen models on RAGTruth subtasks."
+                class="center paper-image image-large"
+                loading="lazy"
+              >
+            <p class="image-caption">
+              Hallucination-related information is concentrated in specific layers rather than distributed uniformly,
+              supporting the use of targeted layers for faithfulness detection.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section paper-section" id="interpretation">
+      <div class="container is-max-widescreen">
+        <div class="columns is-centered has-text-centered">
+          <div class="column is-four-fifths">
+            <h2 class="title is-3">Interpretation and Mitigation</h2>
+            <div class="content has-text-justified section-copy">
+              <p>
+                A central goal of RAGLens is to remain interpretable after training. Because the detector operates on a
+                small set of sparse features, the selected signals can be examined directly and used to support more
+                targeted mitigation of unfaithful outputs.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="columns is-centered visual-block">
+          <div class="column is-full has-text-centered">
+            <div class="content has-text-justified visual-copy">
+              <h3 class="title is-4">Interpretable Sparse Features</h3>
+              <p>
+                The feature analysis below illustrates how individual SAE features can be associated with coherent
+                semantic meanings, activated spans, and learned influence curves in the final predictor.
+              </p>
+            </div>
+              <img
+                src="figs/Tab3.png"
+                alt="Examples of sparse features, activated spans, and their learned influence curves."
+                class="center paper-image image-medium"
+                loading="lazy"
+              >
+            <p class="image-caption">
+              The selected sparse features are interpretable at multiple levels: they can be summarized semantically,
+              localized to activated spans, and linked directly to the detector's response through additive shape
+              functions.
+            </p>
+          </div>
+        </div>
+
+        <div class="columns is-centered visual-block">
+          <div class="column is-full has-text-centered">
+            <div class="content has-text-justified visual-copy">
+              <h3 class="title is-4">Revision with Targeted Feedback</h3>
+              <p>
+                Once hallucination-related spans are identified, the same internal signals can be turned into
+                feedback for revision, enabling instance-level and token-level mitigation strategies.
+              </p>
+            </div>
+              <img
+                src="figs/Tab4.png"
+                alt="Mitigation results using instance-level and token-level feedback derived from RAGLens."
+                class="center paper-image image-compact"
+                loading="lazy"
+              >
+            <p class="image-caption">
+              Targeted feedback, particularly at the token level, reduces hallucination rates across multiple judges
+              and human annotation, showing that the detector supports both analysis and repair.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section paper-section" id="design-analysis">
+      <div class="container is-max-widescreen">
+        <div class="columns is-centered has-text-centered">
+          <div class="column is-four-fifths">
+            <h2 class="title is-3">Design Analysis</h2>
+            <div class="content has-text-justified section-copy">
+              <p>
+                The following studies clarify the main design choices behind RAGLens, including the feature extractor,
+                the number of selected sparse features, the final predictor, and the benefit of sparse features over
+                raw hidden states.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="columns is-centered visual-block">
+          <div class="column is-full has-text-centered">
+            <div class="content has-text-justified visual-copy">
+              <h3 class="title is-4">Feature Extractors</h3>
+              <p>
+                The representation study compares SAEs and Transcoders, using both pre- and post-activation signals,
+                to understand which sparse feature space is most effective for faithfulness detection.
+              </p>
+            </div>
+              <img
+                src="figs/Tab5.png"
+                alt="Comparison of sparse feature extractors and activation choices for hallucination detection."
+                class="center paper-image image-narrow"
+                loading="lazy"
+              >
+            <p class="image-caption">
+              The choice of sparse feature extractor materially affects performance, supporting the representation design
+              used in the final RAGLens pipeline.
+            </p>
+          </div>
+        </div>
+
+        <div class="columns is-centered visual-block">
+          <div class="column is-full has-text-centered">
+            <div class="content has-text-justified visual-copy">
+              <h3 class="title is-4">Feature Selection</h3>
+              <p>
+                The feature-count analysis examines how performance changes as more sparse features are retained and
+                compares mutual-information ranking with random selection.
+              </p>
+            </div>
+              <img
+                src="figs/Fig4.png"
+                alt="Feature-count analysis comparing mutual-information ranking with random selection."
+                class="center paper-image image-large"
+                loading="lazy"
+              >
+            <p class="image-caption">
+              Mutual-information ranking yields much stronger detectors than random feature choice, demonstrating that
+              selecting informative sparse features is a key part of the method.
+            </p>
+          </div>
+        </div>
+
+        <div class="columns is-centered visual-block">
+          <div class="column is-full has-text-centered">
+            <div class="content has-text-justified visual-copy">
+              <h3 class="title is-4">Predictor Choice</h3>
+              <p>
+                We compare generalized additive models with logistic regression, multilayer perceptrons, and gradient
+                boosting to evaluate how much complexity is needed in the final predictor.
+              </p>
+            </div>
+              <img
+                src="figs/Fig5.svg"
+                alt="Predictor comparison among logistic regression, GAM, MLP, and XGBoost."
+                class="center paper-image image-large"
+                loading="lazy"
+              >
+            <p class="image-caption">
+              The generalized additive model provides a strong balance between performance and transparency, matching
+              the overall design goal of an interpretable detector.
+            </p>
+          </div>
+        </div>
+
+        <div class="columns is-centered visual-block">
+          <div class="column is-full has-text-centered">
+            <div class="content has-text-justified visual-copy">
+              <h3 class="title is-4">Sparse Features vs. Hidden States</h3>
+              <p>
+                The final comparison asks whether sparse features are intrinsically more useful than raw hidden states
+                when the detector is built under a comparable feature budget.
+              </p>
+            </div>
+              <img
+                src="figs/Fig6.png"
+                alt="Comparison of sparse autoencoder features and hidden states under different feature budgets."
+                class="center paper-image image-large"
+                loading="lazy"
+              >
+            <p class="image-caption">
+              Sparse SAE features provide stronger signals than raw hidden states in the compact-detector setting,
+              highlighting the practical value of sparse representation probing.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section paper-section" id="feature-case-studies">
+      <div class="container is-max-widescreen">
+        <div class="columns is-centered has-text-centered">
+          <div class="column is-four-fifths">
+            <h2 class="title is-3">Feature Case Studies</h2>
+            <div class="content has-text-justified section-copy">
+              <p>
+                The case studies below make the selected sparse features concrete. They illustrate how individual
+                features respond to specific hallucination patterns, including unsupported numeric details, temporal
+                claims, ratings, and context-sensitive summarization errors.
+                Importantly, we show that the change in feature activation values will causally affect the faithfulness of model output, and the identified features are highly sensitive to the given context, confirming their specificity to unfaithful RAG outputs.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="columns is-centered visual-block">
+          <div class="column is-full has-text-centered">
+            <div class="content has-text-justified visual-copy">
+              <h3 class="title is-4">Numeric and Temporal Specifics</h3>
+              <p>
+                One recurrent pattern is the tendency to hallucinate precise numeric or time-related details. The
+                feature below activates consistently around this type of unsupported specificity.
+              </p>
+            </div>
+              <img
+                src="figs/Tab6.png"
+                alt="Examples of a sparse feature responding to hallucinated numeric and time-related details."
+                class="center paper-image image-medium"
+                loading="lazy"
+              >
+            <p class="image-caption">
+              This feature consistently activates on unsupported numeric and temporal specifics. However, increasing the activation of this feature will steer the model towards generating more faithful outputs.
+            </p>
+          </div>
+        </div>
+
+        <div class="columns is-centered visual-block">
+          <div class="column is-full has-text-centered">
+            <div class="content has-text-justified visual-copy">
+              <h3 class="title is-4">Opening Hours</h3>
+              <p>
+                Another feature specializes in a narrower family of hallucinations involving opening hours, day and
+                time claims. The examples below also show that the increase of this feature's activation will lead to more faithful outputs, confirming the causal relationship between this feature and hallucinated opening hours.
+              </p>
+            </div>
+              <img
+                src="figs/Tab7.png"
+                alt="Examples of a sparse feature responding to hallucinated opening hours."
+                class="center paper-image image-medium"
+                loading="lazy"
+              >
+          </div>
+        </div>
+
+        <div class="columns is-centered visual-block">
+          <div class="column is-full has-text-centered">
+            <div class="content has-text-justified visual-copy">
+              <h3 class="title is-4">Counterfactual Specificity</h3>
+              <p>
+                The counterfactual analysis examines how a selected feature responds when the context is modified in a
+                controlled way, providing a more direct view of feature specificity.
+              </p>
+            </div>
+              <img
+                src="figs/Tab12.png"
+                alt="Counterfactual analysis of a sparse feature tracking ungrounded numeric spans in summarization."
+                class="center paper-image image-tall"
+                loading="lazy"
+              >
+            <p class="image-caption">
+              The example shows that the feature will no longer be activated when the source of the hallucinated numeric content is removed from the retrieved context, confirming that the feature is specifically tracking ungrounded numeric information rather than a more general signal of numeric outputs.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section paper-section" id="BibTeX">
+      <div class="container is-max-desktop content">
+        <h2 class="title is-3 has-text-centered">BibTeX</h2>
+        <pre><code>@inproceedings{xiong2026toward,
+  title={Toward Faithful Retrieval-Augmented Generation with Sparse Autoencoders},
+  author={Guangzhi Xiong and Zhenghao He and Bohan Liu and Sanchit Sinha and Aidong Zhang},
+  booktitle={The Fourteenth International Conference on Learning Representations},
+  year={2026},
+  url={https://openreview.net/forum?id=hgBZP67BkP}
+}</code></pre>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="container">
+        <div class="content has-text-centered">
+          <a class="icon-link" href="https://arxiv.org/abs/2512.08892" target="_blank" rel="noopener">
+            <i class="ai ai-arxiv"></i>
+          </a>
+          <a class="icon-link" href="https://openreview.net/forum?id=hgBZP67BkP" target="_blank" rel="noopener">
+            <i class="fa-solid fa-book-open"></i>
+          </a>
+          <a class="icon-link" href="https://github.com/Teddy-XiongGZ/RAGLens" target="_blank" rel="noopener">
+            <i class="fab fa-github"></i>
+          </a>
+        </div>
+        <div class="columns is-centered">
+          <div class="column is-8">
+            <div class="content footer-copy">
+              <p>
+                This website is adapted from <a href="https://nerfies.github.io/">Nerfies</a> and
+                <a href="https://mathvista.github.io/">MathVista</a>, licensed under a
+                <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">
+                  Creative Commons Attribution-ShareAlike 4.0 International License
+                </a>.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
