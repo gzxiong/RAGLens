@@ -1,5 +1,10 @@
 # RAGLens: Toward Faithful Retrieval-Augmented Generation with Sparse Autoencoders
 
+[![Homepage](https://img.shields.io/badge/Homepage-available-blue)](https://gzxiong.github.io/RAGLens/)
+[![Arxiv](https://img.shields.io/badge/arXiv-2603.16737-b31b1b.svg)](https://arxiv.org/abs/2512.08892)
+[![OpenReview](https://img.shields.io/badge/OpenReview-hgBZP67BkP-brightgreen)](https://openreview.net/forum?id=hgBZP67BkP)
+[![Models](https://img.shields.io/badge/Models-available-yellow)](https://huggingface.co/collections/gzxiong/raglens)
+
 ## Overview
 
 RAGLens is a lightweight hallucination detector for Retrieval‑Augmented Generation (RAG). It leverages sparse autoencoders (SAEs) to disentangle internal LLM activations and then applies a generalized additive model (GAM) over a small, information‑rich subset of features. This yields accurate faithfulness judgments and human‑readable rationales (global + token‑level), enabling practical post‑hoc mitigation.
